@@ -1,3 +1,8 @@
-Django==2.2.13
-pytz==2018.5
+Django
+pytz
 djangorestframework
+django-rest-passwordreset
+psycopg2-binary
+requests
+PyYAML
+ujson
