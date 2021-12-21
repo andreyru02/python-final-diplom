@@ -1,8 +1,9 @@
-Django
+Django~=3.2.9
 pytz
-djangorestframework
+djangorestframework~=3.12.4
 django-rest-passwordreset
 psycopg2-binary
-requests
-PyYAML
-ujson
+requests~=2.26.0
+PyYAML~=6.0
+ujson~=4.2.0
+celery~=5.2.1

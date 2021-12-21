@@ -1,5 +1,4 @@
 from distutils.util import strtobool
-
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -19,7 +18,8 @@ from .models import Shop, Category, Product, ProductInfo, Parameter, ProductPara
     Contact, ConfirmEmailToken
 from .serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer
-from .signals import new_user_registered, new_order
+# from .signals import new_user_registered, new_order
+from .tasks import new_user_registered_email, new_order_email
 
 
 class RegisterAccount(APIView):
@@ -28,13 +28,9 @@ class RegisterAccount(APIView):
     """
     # Регистрация методом POST
     def post(self, request, *args, **kwargs):
-        # print(request.data)
         # проверяем обязательные аргументы
         if {'first_name', 'last_name', 'email', 'password', 'company', 'position'}.issubset(request.data):
-            errors = {}
-
             # проверяем пароль на сложность
-
             try:
                 validate_password(request.data['password'])
             except Exception as password_error:
@@ -53,7 +49,8 @@ class RegisterAccount(APIView):
                     user = user_serializer.save()
                     user.set_password(request.data['password'])
                     user.save()
-                    new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    new_user_registered_email.delay(user_id=user.id)
+                    # new_user_registered.send(sender=self.__class__, user_id=user.id)
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
@@ -67,7 +64,6 @@ class ConfirmAccount(APIView):
     """
     # Регистрация методом POST
     def post(self, request, *args, **kwargs):
-
         # проверяем обязательные аргументы
         if {'email', 'token'}.issubset(request.data):
 
@@ -497,7 +493,8 @@ class OrderView(APIView):
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        new_order.send(sender=self.__class__, user_id=request.user.id)
+                        # new_order.send(sender=self.__class__, user_id=request.user.id)
+                        new_order_email.delay(user_id=request.user.id)
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
