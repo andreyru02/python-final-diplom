@@ -76,7 +76,7 @@ class ConfirmAccount(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class AccountDetailsViewSet(viewsets.ModelViewSet):
+class AccountViewSet(viewsets.ModelViewSet):
     """
     Класс для работы с данными пользователя
     """
@@ -109,17 +109,16 @@ class LoginAccount(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class CategoryDetailsViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
+    """Просмотр категорий"""
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
-class ShopView(ListAPIView):
-    """
-    Класс для просмотра списка магазинов
-    """
-    queryset = Shop.objects.filter(state=True)
+class ShopViewSet(viewsets.ModelViewSet):
+    """Просмотр списка магазинов"""
     serializer_class = ShopSerializer
+    queryset = Shop.objects.filter(state=True)
 
 
 class ProductInfoView(APIView):
