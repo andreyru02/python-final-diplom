@@ -88,7 +88,6 @@ class AccountDetailsViewSet(viewsets.ModelViewSet):
         return User.objects.filter(id=self.request.user.id)
 
 
-
 class LoginAccount(APIView):
     """
     Класс для авторизации пользователей
@@ -110,12 +109,9 @@ class LoginAccount(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class CategoryView(ListAPIView):
-    """
-    Класс для просмотра категорий
-    """
-    queryset = Category.objects.all()
+class CategoryDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
+    queryset = Category.objects.all()
 
 
 class ShopView(ListAPIView):
