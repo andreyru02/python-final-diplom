@@ -9,9 +9,9 @@ from django.http import JsonResponse
 from requests import get
 from rest_framework import viewsets, permissions
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
@@ -26,6 +26,8 @@ class RegisterAccount(APIView):
     """
     Для регистрации покупателей
     """
+
+    @extend_schema(request=None, responses=UserSerializer)
     def post(self, request, *args, **kwargs):
         # проверяем обязательные аргументы
         if {'first_name', 'last_name', 'email', 'password', 'company', 'position'}.issubset(request.data):
@@ -125,6 +127,8 @@ class ProductInfoView(APIView):
     """
     Класс для поиска товаров
     """
+
+    @extend_schema(request=None, responses=ProductInfoSerializer)
     def get(self, request, *args, **kwargs):
 
         query = Q(shop__state=True)
@@ -154,6 +158,7 @@ class BasketView(APIView):
     """
 
     # получить корзину
+    @extend_schema(request=None, responses=OrderSerializer)
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
@@ -296,7 +301,7 @@ class PartnerState(APIView):
     """
     Класс для работы со статусом поставщика
     """
-
+    @extend_schema(request=None, responses=ShopSerializer)
     # получить текущий статус
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -331,6 +336,8 @@ class PartnerOrders(APIView):
     """
     Класс для получения заказов поставщиками
     """
+
+    @extend_schema(request=None, responses=OrderSerializer)
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
@@ -353,6 +360,7 @@ class ContactView(APIView):
     Класс для работы с контактами покупателей
     """
 
+    @extend_schema(request=None, responses=ContactSerializer)
     # получить мои контакты
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -425,6 +433,7 @@ class OrderView(APIView):
     Класс для получения и размешения заказов пользователями
     """
 
+    @extend_schema(request=None, responses=OrderSerializer)
     # получить мои заказы
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
