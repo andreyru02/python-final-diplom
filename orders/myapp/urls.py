@@ -10,7 +10,7 @@ app_name = 'myapp'
 
 router = DefaultRouter()
 
-router.register('user', AccountViewSet)
+router.register('user', AccountViewSet, basename='users')
 router.register('categories', CategoryViewSet)
 router.register('shops', ShopViewSet)
 

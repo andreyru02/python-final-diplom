@@ -7,3 +7,4 @@ requests~=2.26.0
 PyYAML~=6.0
 ujson~=4.2.0
 celery~=5.2.1
+pytest~=6.2.5
